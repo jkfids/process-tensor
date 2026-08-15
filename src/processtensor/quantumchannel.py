@@ -36,6 +36,7 @@ class QuantumChannel(QTensor):
 
     @classmethod
     def from_superoperator(cls, S: np.ndarray) -> QuantumChannel:
+        """Build from a Liouville superoperator ``S``."""
         return cls(np.asarray(S, dtype=complex).T)
 
     @classmethod
@@ -81,4 +82,5 @@ class QuantumChannel(QTensor):
         return np.allclose(marginal, np.eye(self.dims[0]), rtol=0, atol=atol)
 
     def is_cptp(self, atol: float = TOL) -> bool:
+        """Complete positivity plus trace preservation."""
         return self.is_cp(atol) and self.is_tp(atol)

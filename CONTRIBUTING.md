@@ -17,9 +17,9 @@ pre-commit install
 
 Development proceeds by branch and pull request, including for the
 maintainer. Create a branch per change, open a pull request against
-`main`, and merge only once CI (tests, lint, formatting) passes. New
-behavior comes with tests; the analytic worked examples in `tests/` are
-the model.
+`main`, and merge only once CI (tests, types, and the pre-commit hooks)
+passes. New behavior comes with tests; the analytic worked examples in
+`tests/` are the model.
 
 ## Commit messages
 
@@ -37,5 +37,5 @@ Types in use: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`.
 ## Versioning
 
 Releases follow [semantic versioning](https://semver.org). The version
-lives in `src/processtensor/__init__.py`; releases are annotated git tags
+lives in `src/processtensor/__about__.py`; releases are annotated git tags
 of the form `vX.Y.Z`.

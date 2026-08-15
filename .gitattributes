@@ -1,0 +1,13 @@
+# ==============================================================================
+# .gitattributes – processtensor
+# ==============================================================================
+
+# Normalize detected text files: LF in the repository and on checkout.
+* text=auto eol=lf
+
+# Show meaningful structural context in diffs.
+*.py  diff=python
+*.md  diff=markdown
+
+# Keep the notebook out of GitHub's language statistics.
+docs/**    linguist-documentation

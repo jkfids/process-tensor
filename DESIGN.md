@@ -103,8 +103,11 @@ values.
 - Docstrings are concise prose stating the mathematics and the applicable
   conventions, using RST markup (double backticks, `:func:` references)
   and no Args/Returns boilerplate; module docstrings state the module's
-  scope.
+  scope. Every public member carries one, opening with a one-line summary
+  followed by a blank line (ruff `D`, pep257 convention).
 - Comments record only constraints the code cannot express itself.
+- Functions are annotated; the package ships `py.typed` and is checked
+  with mypy. Arrays are annotated as bare `np.ndarray`.
 - All text is self-contained: definitions are stated in place, never
   deferred to a paper. Citations of the literature (as for the link
   product) may supplement a definition but must not substitute for it.

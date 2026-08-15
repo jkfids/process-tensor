@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Self
+
 import numpy as np
 
 from . import representations
@@ -39,6 +41,7 @@ class QTensor:
 
     @property
     def nlegs(self) -> int:
+        """Number of fused legs, one per physical wire."""
         return len(self.dims)
 
     # -- Choi representation ------------------------------------------------
@@ -54,7 +57,7 @@ class QTensor:
         return representations.choi_matrix(self)
 
     @classmethod
-    def from_choi(cls, matrix: np.ndarray, dims: tuple[int, ...]) -> QTensor:
+    def from_choi(cls, matrix: np.ndarray, dims: tuple[int, ...]) -> Self:
         """Inverse of :attr:`choi`: build the leg tensor from a Choi matrix."""
         dims = tuple(int(d) for d in dims)
         return cls(representations.choi_to_tensor(matrix, dims), dims)
@@ -97,6 +100,7 @@ class QTensor:
     # -- Validity -----------------------------------------------------------
 
     def is_hermitian(self, atol: float = TOL) -> bool:
+        """Hermiticity of the Choi matrix."""
         return is_hermitian(self.choi, atol)
 
     def is_cp(self, atol: float = TOL) -> bool:

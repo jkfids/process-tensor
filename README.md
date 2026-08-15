@@ -15,12 +15,23 @@ operations performed on the system at intermediate times) to the output state:
 = \rho_\mathrm{out}.
 ```
 
-Like a quantum channel, it admits equivalent representations; this package
-works with its Choi representation $\Upsilon_{0:k}$, a positive semidefinite
-operator on the in/out spaces of every time step obeying causal (containment)
-constraints. Any process tensor arises physically from joint
-system-environment dynamics (a multi-time Stinespring dilation), which is how
-process tensors are constructed here.
+Every such map arises from unitary system-environment dynamics interleaved
+with the instruments—a multi-time Stinespring dilation—which is how processes
+are built here:
+
+```math
+\rho_\mathrm{out} = \mathrm{Tr}_E\big[\mathcal{U}_k\,
+(\mathcal{A}_{k-1} \otimes \mathcal{I}_E)\, \mathcal{U}_{k-1} \cdots
+\mathcal{U}_1\, (\mathcal{A}_0 \otimes \mathcal{I}_E)\, \mathcal{U}_0\,
+(\rho_\mathrm{in} \otimes \sigma_E)\big],
+```
+
+where $\mathcal{U}_j$ is conjugation by a joint unitary $U_j$ on
+$\mathcal{H}_S \otimes \mathcal{H}_E$ and $\sigma_E$ is the initial
+environment state. Like a channel, a process tensor admits several equivalent
+representations. Objects are stored here as fused-leg Liouville tensors, from
+which the others follow—among them the Choi operator $\Upsilon_{0:k}$,
+positive semidefinite and subject to causal (containment) constraints.
 
 ## Features
 
@@ -30,44 +41,38 @@ The package divides into quantum *objects*, their *representations* and
 
 **Objects**
 
-- `QuantumState` – density matrices with subsystem structure: validity
-  checks, purity, marginals.
-- `QuantumChannel` – CP maps as superoperators: construction from Kraus
-  operators, unitaries, or Stinespring dilations
-  $\mathrm{Tr}_E[U(\rho \otimes \sigma_E)U^\dagger]$; application to states,
-  composition, CP/TP checks.
-- `ProcessTensor` – $k$-slot process tensors built from a sequence of
-  system-environment unitaries: `apply(state, instruments)` implements the
-  multilinear action, `is_valid()` checks complete positivity and the causal
-  containment constraints, and `markov_product()` gives the closest
-  time-factorized (Markovian) process.
+- `QuantumState` – density matrices with subsystem structure.
+- `QuantumChannel` – CP maps as superoperators, built from Kraus operators,
+  unitaries, or a Stinespring dilation. Trace-decreasing maps are allowed,
+  so this is also the instrument type.
+- `ProcessTensor` – $k$-slot processes from $k+1$ joint unitaries, with
+  `apply(state, instruments)` for the multilinear action, `is_valid()` for
+  complete positivity and the causal constraints, and `markov_product()`
+  for the closest time-factorized process.
 
 **Representations and operations**
 
-- Every object exposes its Choi matrix (`.choi` / `from_choi`); further
-  representations (Kraus, Stinespring, chi-matrix) will live in
-  `representations`.
-- `link_product` – the composition of quantum objects in the Choi picture
-  (Chiribella–D'Ariano–Perinotti); feeding a state through a channel,
-  composing channels, and building process tensors from system-environment
-  tensors are all special cases.
+- `representations` – conversions out of the stored fused-leg tensor,
+  presently the Choi matrix (`.choi` / `from_choi`); Kraus, Stinespring, and
+  chi-matrix forms will follow.
+- `link_product` – composition of objects (Chiribella–D'Ariano–Perinotti),
+  of which feeding a state through a channel, composing channels, and
+  contracting a process with its instruments are special cases.
 
 **Measures**
 
 Object-agnostic functionals in `measures`, with convenience methods on the
-classes—the same function computes the spatial version for a state and the
-temporal version for a process tensor:
+classes: one function gives the spatial quantity for a state and the temporal
+one for a process tensor.
 
 - `entropy`, `purity`, `mutual_information` – von Neumann entropy, purity,
-  and generalized quantum mutual information of any object; for a process
-  tensor, `gqmi()` computes $S(\Upsilon \Vert \Upsilon_\mathrm{Markov})$, the
-  relative entropy to the product of single-time-step marginals.
-- `negativity` – entanglement negativity across a cut: spatial entanglement
-  of a state, or temporal entanglement (`temporal_negativity()`) witnessing
-  genuinely quantum memory in a process.
-- `schmidt_rank` / `bond_entropy` – operator Schmidt rank and entanglement
-  entropy across a cut; for a process tensor the rank equals the minimal MPO
-  bond dimension at that temporal cut.
+  and generalized quantum mutual information; for a process tensor `gqmi()`
+  is $S(\Upsilon \Vert \Upsilon_\mathrm{Markov})$, the relative entropy to
+  the product of single-time-step marginals.
+- `negativity` – spatial entanglement of a state, or temporal entanglement
+  (`temporal_negativity()`) witnessing genuinely quantum memory.
+- `schmidt_rank`, `bond_entropy` – operator Schmidt data across a cut; for a
+  process the rank is the minimal MPO bond dimension there.
 
 ## Installation
 
@@ -123,12 +128,14 @@ the design philosophy of the package.
 
 ```bash
 pip install -e '.[dev]'
-pre-commit install   # lint/format hooks (ruff check + ruff format) on commit
-pytest               # unit tests
-ruff check .         # lint
+pre-commit install          # hooks run on commit
+pytest                      # unit tests
+mypy                        # type check
+pre-commit run --all-files  # lint and format, as CI runs them
 ```
 
-Tests, linting, and formatting run in CI on Python 3.12–3.14. See
+Tests, type checking, linting, and formatting run in CI on Python
+3.12–3.14. See
 [CONTRIBUTING.md](CONTRIBUTING.md) for the development workflow.
 
 ## License

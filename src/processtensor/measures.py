@@ -100,7 +100,7 @@ def bond_entropy(x: QTensor, cut: int) -> float:
 
     Also known as the operator entanglement entropy: with
     ``p_i = s_i^2 / sum_j s_j^2``, returns ``-sum_i p_i ln p_i``. It bounds
-    how compressible the object is across the cut - zero if and only if
+    how compressible the object is across the cut—zero if and only if
     the tensor factorizes there.
     """
     s = schmidt_values(x, cut)

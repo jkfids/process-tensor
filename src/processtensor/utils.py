@@ -70,7 +70,9 @@ def superop_from_unitary(U: np.ndarray) -> np.ndarray:
 
 def superop_from_kraus(kraus: list[np.ndarray]) -> np.ndarray:
     """Liouville superoperator of ``rho -> sum_i K_i rho K_i^dag``."""
-    return sum(np.kron(K.conj(), K) for K in kraus)
+    if not kraus:
+        raise ValueError("At least one Kraus operator is required.")
+    return np.sum([np.kron(K.conj(), K) for K in kraus], axis=0)
 
 
 def rft_unitary(U: np.ndarray, dS: int, dE: int) -> np.ndarray:
@@ -87,6 +89,7 @@ def rft_unitary(U: np.ndarray, dS: int, dE: int) -> np.ndarray:
 
 
 def is_hermitian(a: np.ndarray, atol: float = TOL) -> bool:
+    """Whether a matrix equals its conjugate transpose."""
     # rtol=0 so that atol is the actual tolerance; numpy's default rtol=1e-5
     # would otherwise dominate and make the check far looser than TOL.
     return np.allclose(a, dagger(a), rtol=0, atol=atol)
@@ -140,6 +143,7 @@ def random_unitary(d: int, rng: np.random.Generator | None = None) -> np.ndarray
 
 
 def maximally_mixed(d: int) -> np.ndarray:
+    """Maximally mixed state ``I / d`` in dimension ``d``."""
     return np.eye(d, dtype=complex) / d
 
 

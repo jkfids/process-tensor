@@ -1,48 +1,130 @@
+# ==============================================================================
+# pyproject.toml – processtensor
+#
+# Build backend: hatchling. Lint + format: ruff. Tests: pytest. Types: mypy.
+#
+# Guide (user-friendly):
+# https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
+#
+# Specification (technical, formal):
+# https://packaging.python.org/en/latest/specifications/pyproject-toml/
+# ==============================================================================
+
 [build-system]
-requires = ["hatchling"]
+# Hatchling is a modern, extensible build backend for Python projects.
+# 1.27 is the floor for PEP 639 license metadata (core metadata 2.4).
+requires = ["hatchling>=1.27"]  # REQUIRED
 build-backend = "hatchling.build"
 
 [project]
-dynamic = ["version"]
 name = "processtensor"
+dynamic = ["version"]  # From src/processtensor/__about__.py; see [tool.hatch.version].
 description = "Minimal numerical process tensors: multi-time quantum processes, validity checks, and temporal correlation measures."
 readme = "README.md"
 requires-python = ">=3.12"
-authors = [{ name = "John Fidel Kam", email = "jfidelkam@gmail.com" }]
+authors = [{ name = "John F. Kam", email = "jfidelkam@gmail.com" }]
 keywords = [
   "process tensor",
   "quantum information",
   "open quantum systems",
   "non-Markovianity",
 ]
+# PEP 639: an SPDX expression and the file it refers to. A license classifier
+# must not appear alongside these.
+license = "MIT"
+license-files = ["LICENSE"]
 classifiers = [
-  "Programming Language :: Python :: 3",
-  "License :: OSI Approved :: MIT License",
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
   "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Topic :: Scientific/Engineering :: Physics",
+  "Typing :: Typed",
 ]
-dependencies = ["numpy"]
+
+# The only runtime dependency. No upper bound, per library convention; the
+# floor is the oldest numpy with wheels for the whole matrix.
+dependencies = ["numpy>=2.4"]
 
 [project.optional-dependencies]
-dev = ["pytest", "ruff", "pre-commit"]
-examples = ["matplotlib"]
+# Install with:
+# pip install -e '.[dev]'
+dev = [
+  "pytest>=9",
+  "ruff>=0.16",
+  "mypy>=2",
+  "pre-commit>=4",
+  "build>=1.5",
+]
+examples = ["matplotlib>=3.11"]  # docs/getting_started.ipynb.
+
+[project.urls]
+Homepage = "https://github.com/jkfids/process-tensor"
+Source = "https://github.com/jkfids/process-tensor"
+Issues = "https://github.com/jkfids/process-tensor/issues"
 
 [tool.hatch.version]
-path = "src/processtensor/__init__.py"
+path = "src/processtensor/__about__.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/processtensor"]
 
-[tool.pytest.ini_options]
-testpaths = ["tests"]
+# The sdist is an allow-list, not the tracked tree. Hatchling would otherwise
+# ship everything git does not ignore.
+[tool.hatch.build.targets.sdist]
+only-include = ["src", "tests"]
+
+# ==============================================================================
+# Tooling
+# ==============================================================================
 
 [tool.ruff]
 line-length = 100
-target-version = "py312"
-extend-exclude = ["deprecated"]
+# Linting follows the code, as an allow-list. Half the rule; `files:` in
+# .pre-commit-config.yaml is the other half and covers root-level files.
+include = ["src/**/*.py", "tests/**/*.py"]
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "W"]
+# pyflakes (F), pycodestyle imports/statements/syntax (E4/E7/E9), isort (I),
+# bugbear (B), pyupgrade (UP), debugger (T10), invalid escapes (W6),
+# flake8-simplify (SIM), ruff-specific (RUF), pydocstyle (D).
+# E501 and W505 carry the 100- and 80-character limits, which the formatter
+# cannot enforce for comments, strings or docstrings.
+select = [
+  "E4", "E7", "E9", "E501", "W505", "W6",
+  "F", "I", "B", "UP", "T10", "SIM", "RUF", "D",
+]
+# Magic methods and __init__ are covered by the class docstring; docstrings
+# are noun phrases rather than imperative sentences.
+ignore = ["D105", "D107", "D401"]
+
+[tool.ruff.lint.per-file-ignores]
+# A test carries a docstring only where its name is not enough.
+"tests/**/*.py" = ["D"]
 
 [tool.ruff.lint.pycodestyle]
-max-doc-length = 80
+max-doc-length = 80  # W505 is inert without this.
+
+[tool.ruff.lint.pydocstyle]
+convention = "pep257"  # Docstrings are prose, with no Args/Returns sections.
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# No markers are declared: every test is a fast unit test.
+addopts = "-q -ra --strict-markers --strict-config"
+
+[tool.mypy]
+files = ["src"]
+python_version = "3.12"
+disallow_untyped_defs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_unused_configs = true
+# Not `strict`: disallow_any_generics rejects the bare `np.ndarray`
+# annotations used throughout.

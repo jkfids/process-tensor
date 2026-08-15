@@ -1,17 +1,69 @@
+# ==============================================================================
+# .pre-commit-config.yaml – processtensor
+#
+# Setup (once per clone): pre-commit install
+# Run everything: pre-commit run --all-files
+# Update hooks: pre-commit autoupdate
+#
+# CI runs this file, so the revs pinned here are the authoritative lint and
+# format versions.
+# ==============================================================================
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
-      - id: check-yaml
-      - id: check-toml
-      - id: check-added-large-files
-      - id: check-merge-conflict
+      # Cosmetic hygiene is scoped to the repository root and the code trees.
+      - id: trailing-whitespace  # Remove trailing whitespace
+        args: [--markdown-linebreak-ext=md]
+        files: '^([^/]+|(src|tests|docs|\.github)/.*)$'
+      - id: end-of-file-fixer  # Ensure files end with a newline
+        files: '^([^/]+|(src|tests|docs|\.github)/.*)$'
 
+      # Safety hygiene stays repository-wide.
+      - id: check-merge-conflict  # Catch unresolved merge conflict markers
+      - id: check-added-large-files  # Block large files from being committed
+        args: [--maxkb=5000]
+      - id: detect-private-key  # Basic protection against committing private keys
+      - id: check-toml  # Validate TOML syntax
+      - id: check-yaml  # Validate YAML syntax
+
+      # Omitted by default
+      # - id: no-commit-to-branch  # Branch protection on main does this
+      # - id: check-json  # .vscode/*.json is JSONC, which this would reject
+      # - id: check-executables-have-shebangs  # Executable files must have a shebang
+      # - id: check-shebang-scripts-are-executable  # Shebang implies +x
+      # - id: check-symlinks  # Catch broken symlinks
+      # - id: check-case-conflict  # Catch names that clash on case-insensitive filesystems
+
+# ruff linting and formatting. Paths are restated here because pre-commit
+# passes filenames explicitly, which bypasses `include` in pyproject.toml.
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.16.3
     hooks:
       - id: ruff-check
-        args: [--fix]
+        args: ["--fix"]
+        files: '^([^/]+\.py|(src|tests)/.*\.py)$'
       - id: ruff-format
+        files: '^([^/]+\.py|(src|tests)/.*\.py)$'
+
+# US spelling is a DESIGN.md rule; the en-GB_to_en-US builtin enforces it.
+#   - repo: https://github.com/codespell-project/codespell
+#     rev: v2.4.1
+#     hooks:
+#       - id: codespell
+#         args: ["--builtin", "clear,rare,en-GB_to_en-US"]
+
+# Stronger secret scanning than detect-private-key (API keys, tokens).
+# Requires a baseline file: `detect-secrets scan > .secrets.baseline` first.
+#   - repo: https://github.com/Yelp/detect-secrets
+#     rev: v1.5.0
+#     hooks:
+#       - id: detect-secrets
+#         args: ["--baseline", ".secrets.baseline"]
+
+# pyproject.toml formatting. Recommended to enable after pyproject.toml is stable.
+#   - repo: https://github.com/tox-dev/pyproject-fmt
+#     rev: v2.25.3
+#     hooks:
+#       - id: pyproject-fmt  # Canonicalize pyproject.toml formatting

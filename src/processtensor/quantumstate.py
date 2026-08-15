@@ -28,6 +28,7 @@ class QuantumState(QTensor):
 
     @property
     def density_matrix(self) -> np.ndarray:
+        """Density matrix, i.e. the Choi matrix of a state."""
         return self.choi
 
     def is_valid(self, atol: float = TOL) -> bool:
@@ -35,6 +36,7 @@ class QuantumState(QTensor):
         return self.is_cp(atol) and bool(np.isclose(self.trace, 1.0, rtol=0, atol=atol))
 
     def purity(self) -> float:
+        """Purity ``Tr[rho^2]`` of the density matrix."""
         return measures.purity(self)
 
     def entropy(self) -> float:
@@ -55,21 +57,27 @@ class QuantumState(QTensor):
         return measures.negativity(self, cut)
 
     def schmidt_rank(self, cut: int | None = None) -> int:
-        """Operator Schmidt rank across the first ``cut`` subsystems | rest
-        (default: half). A pure state with state-vector Schmidt rank r has
-        operator Schmidt rank r^2."""
+        """Operator Schmidt rank across the first ``cut`` subsystems | rest.
+
+        ``cut`` defaults to half. A pure state with state-vector Schmidt
+        rank r has operator Schmidt rank r^2.
+        """
         cut = self.nlegs // 2 if cut is None else cut
         return measures.schmidt_rank(self, cut)
 
     def bond_entropy(self, cut: int | None = None) -> float:
-        """Operator entanglement entropy across the first ``cut`` subsystems
-        | rest (default: half)."""
+        """Operator entanglement entropy across a bipartition.
+
+        The first ``cut`` subsystems | rest, with ``cut`` defaulting to half.
+        """
         cut = self.nlegs // 2 if cut is None else cut
         return measures.bond_entropy(self, cut)
 
     def mutual_information(self, partition: list[list[int]] | None = None) -> float:
-        """Quantum mutual information over a partition of the subsystems
-        (default: every subsystem its own block)."""
+        """Quantum mutual information over a partition of the subsystems.
+
+        ``partition`` defaults to every subsystem in its own block.
+        """
         if partition is None:
             partition = [[j] for j in range(self.nlegs)]
         return measures.mutual_information(self, partition)
