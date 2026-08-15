@@ -95,16 +95,16 @@ plus = np.ones((2, 2)) / 2  # environment in |+⟩⟨+|
 
 pt = ProcessTensor.from_stinespring([U, U], plus)
 
-pt.is_valid()              # True  (completely positive + causally ordered)
-pt.gqmi()                  # 1.386... = 2 ln 2 (maximal temporal correlations)
-pt.temporal_negativity()   # 0.5   (temporal entanglement: quantum memory)
-pt.schmidt_rank()          # 4     (MPO bond dimension, saturating dE² = 4)
+pt.is_valid()  # True  (completely positive + causally ordered)
+pt.gqmi()  # 1.386... = 2 ln 2 (maximal temporal correlations)
+pt.temporal_negativity()  # 0.5   (temporal entanglement: quantum memory)
+pt.schmidt_rank()  # 4     (MPO bond dimension, saturating dE² = 4)
 
 # Act on an input state with an instrument in the intermediate slot:
 rho_in = np.diag([1.0, 0.0])
 instrument = QuantumChannel.from_unitary(pauli("X"))
 rho_out = pt.apply(rho_in, [instrument])
-rho_out.density_matrix     # == rho_in: the SWAP process returns the stored input
+rho_out.density_matrix  # == rho_in: the SWAP process returns the stored input
 ```
 
 For a guided tour—states, channels, process tensors, the link product, and
