@@ -37,5 +37,5 @@ Types in use: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`.
 ## Versioning
 
 Releases follow [semantic versioning](https://semver.org). The version
-lives in `src/processtensor/__init__.py`; releases are annotated git tags
+lives in `src/processtensor/__about__.py`; releases are annotated git tags
 of the form `vX.Y.Z`.

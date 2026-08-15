@@ -6,8 +6,7 @@ validity checks (complete positivity, causal ordering) and object-agnostic
 correlation measures (entropy, negativity, mutual information).
 """
 
-__version__ = "0.1.0"
-
+from .__about__ import __version__
 from .measures import (
     bond_entropy,
     entropy,
@@ -35,7 +34,8 @@ from .utils import (
     von_neumann_entropy,
 )
 
-__all__ = [
+__all__ = [  # noqa: RUF022 - grouped by DESIGN.md category, not isort order
+    "__version__",
     "QTensor",
     "QuantumState",
     "QuantumChannel",

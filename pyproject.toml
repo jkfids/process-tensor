@@ -28,7 +28,7 @@ dev = ["pytest", "ruff", "pre-commit"]
 examples = ["matplotlib"]
 
 [tool.hatch.version]
-path = "src/processtensor/__init__.py"
+path = "src/processtensor/__about__.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/processtensor"]
