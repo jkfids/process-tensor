@@ -22,7 +22,7 @@ dynamic = ["version"]  # From src/processtensor/__about__.py; see [tool.hatch.ve
 description = "Minimal numerical process tensors: multi-time quantum processes, validity checks, and temporal correlation measures."
 readme = "README.md"
 requires-python = ">=3.12"
-authors = [{ name = "John Fidel Kam", email = "jfidelkam@gmail.com" }]
+authors = [{ name = "John F. Kam", email = "jfidelkam@gmail.com" }]
 keywords = [
   "process tensor",
   "quantum information",
