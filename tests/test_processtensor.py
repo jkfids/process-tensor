@@ -140,3 +140,31 @@ def test_output_state_is_valid():
     noise = QuantumChannel.from_kraus([np.sqrt(0.9) * pauli("I"), np.sqrt(0.1) * pauli("X")])
     out = pt.apply(rho, [noise])
     assert out.is_valid()
+
+
+def test_causality_tolerance_is_atol():
+    """``atol`` must be the actual tolerance of the causality check.
+
+    numpy's default ``rtol=1e-5`` would otherwise dominate, making the check
+    orders of magnitude looser than TOL on a unit-scale Choi matrix. Genuine
+    processes have residuals of order 1e-16, so atol can be enforced strictly.
+    """
+    pt = random_process(1)
+    assert pt.is_causal()
+    choi = pt.choi.copy()
+    choi[0, 0] += 1e-6 * pt.trace  # far above TOL, but inside numpy's rtol
+    assert not ProcessTensor.from_choi(choi, pt.dims).is_causal()
+
+
+def test_time_reversed_process_is_not_causal():
+    """Reversing the time-step order of the legs must break causality.
+
+    Guards the leg-ordering error that motivated the rewrite: such an object
+    stays completely positive, so only the causal constraints catch it.
+    """
+    pt = ProcessTensor.from_stinespring([random_unitary(4, RNG), random_unitary(4, RNG)], GROUND)
+    t = pt.choi.reshape(*(2,) * 8)
+    reversed_choi = t.transpose(2, 3, 0, 1, 6, 7, 4, 5).reshape(16, 16)
+    reversed_pt = ProcessTensor.from_choi(reversed_choi, pt.dims)
+    assert reversed_pt.is_cp()
+    assert not reversed_pt.is_causal()

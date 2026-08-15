@@ -73,3 +73,16 @@ def test_relative_entropy_self_is_zero():
 def test_relative_entropy_support_mismatch_is_inf():
     pure = np.diag([1.0, 0.0]).astype(complex)
     assert relative_entropy(maximally_mixed(2), pure) == np.inf
+
+
+def test_relative_entropy_tolerates_tiny_eigenvalues():
+    """Genuine small eigenvalues of sigma are support, not numerical zeros.
+
+    A cutoff at the matrix-comparison tolerance 1e-8 would call this a support
+    mismatch and return inf, though the relative entropy is finite.
+    """
+    eps = 1e-10  # below TOL, above SPECTRAL_TOL
+    sigma = np.diag([1 - eps, eps]).astype(complex)
+    rho = np.diag([0.5, 0.5]).astype(complex)
+    expected = 0.5 * np.log(0.5 / (1 - eps)) + 0.5 * np.log(0.5 / eps)
+    assert relative_entropy(rho, sigma) == pytest.approx(expected)

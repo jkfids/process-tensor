@@ -78,7 +78,7 @@ class QuantumChannel(QTensor):
     def is_tp(self, atol: float = TOL) -> bool:
         """Trace preservation: ``Tr_out[Choi] = I_in``."""
         marginal = self.partial_trace([0]).choi
-        return np.allclose(marginal, np.eye(self.dims[0]), atol=atol)
+        return np.allclose(marginal, np.eye(self.dims[0]), rtol=0, atol=atol)
 
     def is_cptp(self, atol: float = TOL) -> bool:
         return self.is_cp(atol) and self.is_tp(atol)

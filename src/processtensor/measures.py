@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
-from .utils import TOL, relative_entropy, trace_norm, von_neumann_entropy
+from .utils import SPECTRAL_TOL, TOL, relative_entropy, trace_norm, von_neumann_entropy
 
 if TYPE_CHECKING:
     from .qtensor import QTensor
@@ -105,5 +105,5 @@ def bond_entropy(x: QTensor, cut: int) -> float:
     """
     s = schmidt_values(x, cut)
     p = s**2 / np.sum(s**2)
-    p = p[p > TOL]
+    p = p[p > SPECTRAL_TOL]
     return float(-np.sum(p * np.log(p)))
