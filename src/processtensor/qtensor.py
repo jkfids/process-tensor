@@ -41,6 +41,7 @@ class QTensor:
 
     @property
     def nlegs(self) -> int:
+        """Number of fused legs, one per physical wire."""
         return len(self.dims)
 
     # -- Choi representation ------------------------------------------------
@@ -99,6 +100,7 @@ class QTensor:
     # -- Validity -----------------------------------------------------------
 
     def is_hermitian(self, atol: float = TOL) -> bool:
+        """Hermiticity of the Choi matrix."""
         return is_hermitian(self.choi, atol)
 
     def is_cp(self, atol: float = TOL) -> bool:

@@ -86,7 +86,7 @@ class ProcessTensor(QTensor):
     # -- Validity -----------------------------------------------------------
 
     def is_causal(self, atol: float = TOL) -> bool:
-        """Check the causal (containment) constraints:
+        """Check the causal (containment) constraints.
 
         ``Tr_out_j[Y_0:j] = Y_0:j-1 (x) I_in_j`` for all j, and
         ``Tr_out_0[Y_0:0] = I_in_0``.
@@ -121,7 +121,8 @@ class ProcessTensor(QTensor):
         return ProcessTensor.from_choi(m * self.trace, self.dims)
 
     def gqmi(self) -> float:
-        """Generalized quantum mutual information:
+        """Generalized quantum mutual information.
+
         ``S(Y || Y_Markov)`` with trace-normalized Choi matrices.
         """
         return measures.mutual_information(self, [[2 * j, 2 * j + 1] for j in range(self.steps)])
@@ -139,18 +140,23 @@ class ProcessTensor(QTensor):
         return measures.negativity(self, list(range(2 * cut, self.nlegs)))
 
     def schmidt_rank(self, cut: int | None = None) -> int:
-        """Operator Schmidt rank across a temporal cut after ``cut`` time
-        steps (default: half). Equals the minimal bond dimension of an MPO
-        representation at that cut - at most ``dE^2`` for a process built
-        from an environment of dimension ``dE``."""
+        """Operator Schmidt rank across a temporal cut.
+
+        ``cut`` is the number of leading time steps (default: half). Equals
+        the minimal bond dimension of an MPO representation at that cut—at
+        most ``dE^2`` for a process built from an environment of dimension
+        ``dE``.
+        """
         cut = self.steps // 2 if cut is None else cut
         if not 0 < cut < self.steps:
             raise ValueError(f"Cut must be between 1 and {self.steps - 1}.")
         return measures.schmidt_rank(self, 2 * cut)
 
     def bond_entropy(self, cut: int | None = None) -> float:
-        """Operator entanglement (bond) entropy across a temporal cut after
-        ``cut`` time steps (default: half)."""
+        """Operator entanglement (bond) entropy across a temporal cut.
+
+        ``cut`` is the number of leading time steps (default: half).
+        """
         cut = self.steps // 2 if cut is None else cut
         if not 0 < cut < self.steps:
             raise ValueError(f"Cut must be between 1 and {self.steps - 1}.")
