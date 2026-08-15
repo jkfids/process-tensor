@@ -32,7 +32,7 @@ class QuantumState(QTensor):
 
     def is_valid(self, atol: float = TOL) -> bool:
         """Hermitian, positive semidefinite, and unit trace."""
-        return self.is_cp(atol) and bool(np.isclose(self.trace, 1.0, atol=atol))
+        return self.is_cp(atol) and bool(np.isclose(self.trace, 1.0, rtol=0, atol=atol))
 
     def purity(self) -> float:
         return measures.purity(self)

@@ -24,6 +24,13 @@ _PAULI = {
 
 TOL = 1e-8
 
+# Cutoff separating true numerical zeros from genuine small eigenvalues when
+# determining the support of a spectrum. Much tighter than TOL, which sets the
+# scale for comparing matrices: a valid density matrix can carry eigenvalues of
+# order 1e-12, and treating those as zero would wrongly report a support
+# mismatch in :func:`relative_entropy`.
+SPECTRAL_TOL = 1e-12
+
 
 def pauli(label: str) -> np.ndarray:
     """Pauli matrix, or Kronecker-product Pauli string, for a label.
@@ -80,7 +87,9 @@ def rft_unitary(U: np.ndarray, dS: int, dE: int) -> np.ndarray:
 
 
 def is_hermitian(a: np.ndarray, atol: float = TOL) -> bool:
-    return np.allclose(a, dagger(a), atol=atol)
+    # rtol=0 so that atol is the actual tolerance; numpy's default rtol=1e-5
+    # would otherwise dominate and make the check far looser than TOL.
+    return np.allclose(a, dagger(a), rtol=0, atol=atol)
 
 
 def is_psd(a: np.ndarray, atol: float = TOL) -> bool:
@@ -96,7 +105,7 @@ def trace_norm(a: np.ndarray) -> float:
 def von_neumann_entropy(rho: np.ndarray) -> float:
     """Von Neumann entropy ``-Tr[rho ln rho]`` of a density matrix."""
     p = np.linalg.eigvalsh(rho)
-    p = p[p > TOL]
+    p = p[p > SPECTRAL_TOL]
     return float(-np.sum(p * np.log(p)))
 
 
@@ -109,9 +118,9 @@ def relative_entropy(rho: np.ndarray, sigma: np.ndarray) -> float:
     s, V = np.linalg.eigh(sigma)
     # Weight of rho in each eigenvector of sigma.
     w = np.einsum("ij,ji->i", dagger(V) @ rho, V).real
-    if np.any(w[s <= TOL] > TOL):
+    if np.any(w[s <= SPECTRAL_TOL] > SPECTRAL_TOL):
         return np.inf
-    keep = s > TOL
+    keep = s > SPECTRAL_TOL
     tr_rho_log_sigma = np.sum(w[keep] * np.log(s[keep]))
     return float(-von_neumann_entropy(rho) - tr_rho_log_sigma)
 

@@ -87,7 +87,11 @@ values.
 - **Choi normalization.** Choi matrices are unnormalized, with
   `Tr Υ = d_S^(k+1)` for a valid process; measures normalize to unit
   trace internally.
-- **Tolerance.** Numerical comparisons default to `TOL = 1e-8`.
+- **Tolerance.** Numerical comparisons default to `TOL = 1e-8`. Deciding
+  whether an eigenvalue is zero is a separate question with a separate
+  constant, `SPECTRAL_TOL = 1e-12`: a valid density matrix can carry
+  genuine eigenvalues far below the comparison tolerance, and rounding
+  those to zero would misreport the support of a spectrum.
 
 ## Language and style
 

@@ -96,11 +96,11 @@ class ProcessTensor(QTensor):
             d_in = pt.dims[2 * j]
             Y = pt.partial_trace(list(range(2 * j + 1)))  # drop out_j
             Z = pt.partial_trace(list(range(2 * j)))  # drop in_j and out_j
-            if not np.allclose(Y.choi, np.kron(Z.choi / d_in, np.eye(d_in)), atol=atol):
+            if not np.allclose(Y.choi, np.kron(Z.choi / d_in, np.eye(d_in)), rtol=0, atol=atol):
                 return False
             pt = QTensor(Z.data / d_in, Z.dims)
         marginal = pt.partial_trace([0]).choi
-        return np.allclose(marginal, np.eye(pt.dims[0]), atol=atol)
+        return np.allclose(marginal, np.eye(pt.dims[0]), rtol=0, atol=atol)
 
     def is_valid(self, atol: float = TOL) -> bool:
         """Complete positivity plus causal ordering."""
