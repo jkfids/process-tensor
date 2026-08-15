@@ -67,8 +67,8 @@ one for a process tensor.
 
 - `entropy`, `purity`, `mutual_information` – von Neumann entropy, purity,
   and generalized quantum mutual information; for a process tensor `gqmi()`
-  is `S(Υ ‖ Υ_Markov)`, the relative entropy to
-  the product of single-time-step marginals.
+  is `S(Υ ‖ Υ_Markov)`, the relative entropy to the product of
+  single-time-step marginals.
 - `negativity` – spatial entanglement of a state, or temporal entanglement
   (`temporal_negativity()`) witnessing genuinely quantum memory.
 - `schmidt_rank`, `bond_entropy` – operator Schmidt data across a cut; for a
