@@ -6,8 +6,8 @@ A minimal numerical implementation of **process tensors**—the general
 description of multi-time quantum processes with non-Markovian memory—together
 with the quantum states and channels they act on.
 
-A $k$-slot process tensor is a multilinear map taking an initial system state
-$\rho_\mathrm{in}$ and a sequence of $k$ *instruments* (CP maps representing
+A $`k`$-slot process tensor is a multilinear map taking an initial system state
+$`\rho_\mathrm{in}`$ and a sequence of $`k`$ *instruments* (CP maps representing
 operations performed on the system at intermediate times) to the output state:
 
 ```math
@@ -26,11 +26,11 @@ are built here:
 (\rho_\mathrm{in} \otimes \sigma_E)\big],
 ```
 
-where $\mathcal{U}_j$ is conjugation by a joint unitary $U_j$ on
-$\mathcal{H}_S \otimes \mathcal{H}_E$ and $\sigma_E$ is the initial
+where $`\mathcal{U}_j`$ is conjugation by a joint unitary $`U_j`$ on
+$`\mathcal{H}_S \otimes \mathcal{H}_E`$ and $`\sigma_E`$ is the initial
 environment state. Like a channel, a process tensor admits several equivalent
 representations. Objects are stored here as fused-leg Liouville tensors, from
-which the others follow—among them the Choi operator $\Upsilon_{0:k}$,
+which the others follow—among them the Choi operator $`\Upsilon_{0:k}`$,
 positive semidefinite and subject to causal (containment) constraints.
 
 ## Features
@@ -45,7 +45,7 @@ The package divides into quantum *objects*, their *representations* and
 - `QuantumChannel` – CP maps as superoperators, built from Kraus operators,
   unitaries, or a Stinespring dilation. Trace-decreasing maps are allowed,
   so this is also the instrument type.
-- `ProcessTensor` – $k$-slot processes from $k+1$ joint unitaries, with
+- `ProcessTensor` – $`k`$-slot processes from $`k+1`$ joint unitaries, with
   `apply(state, instruments)` for the multilinear action, `is_valid()` for
   complete positivity and the causal constraints, and `markov_product()`
   for the closest time-factorized process.
@@ -67,7 +67,7 @@ one for a process tensor.
 
 - `entropy`, `purity`, `mutual_information` – von Neumann entropy, purity,
   and generalized quantum mutual information; for a process tensor `gqmi()`
-  is $S(\Upsilon \Vert \Upsilon_\mathrm{Markov})$, the relative entropy to
+  is $`S(\Upsilon \Vert \Upsilon_\mathrm{Markov})`$, the relative entropy to
   the product of single-time-step marginals.
 - `negativity` – spatial entanglement of a state, or temporal entanglement
   (`temporal_negativity()`) witnessing genuinely quantum memory.
@@ -79,7 +79,7 @@ one for a process tensor.
 ```bash
 git clone https://github.com/jkfids/process-tensor
 cd process-tensor
-pip install -e .            # or `pip install -e '.[dev,examples]'`
+pip install -e .  # or `pip install -e '.[dev,examples]'`
 ```
 
 The only runtime dependency is numpy.
@@ -100,10 +100,10 @@ plus = np.ones((2, 2)) / 2  # environment in |+⟩⟨+|
 
 pt = ProcessTensor.from_stinespring([U, U], plus)
 
-pt.is_valid()  # True  (completely positive + causally ordered)
+pt.is_valid()  # True (completely positive + causally ordered)
 pt.gqmi()  # 1.386... = 2 ln 2 (maximal temporal correlations)
-pt.temporal_negativity()  # 0.5   (temporal entanglement: quantum memory)
-pt.schmidt_rank()  # 4     (MPO bond dimension, saturating dE² = 4)
+pt.temporal_negativity()  # 0.5 (temporal entanglement: quantum memory)
+pt.schmidt_rank()  # 4 (MPO bond dimension, saturating dE² = 4)
 
 # Act on an input state with an instrument in the intermediate slot:
 rho_in = np.diag([1.0, 0.0])
@@ -128,15 +128,14 @@ the design philosophy of the package.
 
 ```bash
 pip install -e '.[dev]'
-pre-commit install          # hooks run on commit
-pytest                      # unit tests
-mypy                        # type check
+pre-commit install  # hooks run on commit
+pytest  # unit tests
+mypy  # type check
 pre-commit run --all-files  # lint and format, as CI runs them
 ```
 
-Tests, type checking, linting, and formatting run in CI on Python
-3.12–3.14. See
-[CONTRIBUTING.md](CONTRIBUTING.md) for the development workflow.
+Tests, type checking, linting, and formatting run in CI on Python 3.12–3.14.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the development workflow.
 
 ## License
 

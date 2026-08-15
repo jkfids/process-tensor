@@ -105,7 +105,8 @@ values.
   and no Args/Returns boilerplate; module docstrings state the module's
   scope. Every public member carries one, opening with a one-line summary
   followed by a blank line (ruff `D`, pep257 convention).
-- Comments record only constraints the code cannot express itself.
+- Comments record only constraints the code cannot express itself, and sit
+  two spaces after the code they annotate, in any language.
 - Functions are annotated; the package ships `py.typed` and is checked
   with mypy. Arrays are annotated as bare `np.ndarray`.
 - All text is self-contained: definitions are stated in place, never
