@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Self
+
 import numpy as np
 
 from . import representations
@@ -54,7 +56,7 @@ class QTensor:
         return representations.choi_matrix(self)
 
     @classmethod
-    def from_choi(cls, matrix: np.ndarray, dims: tuple[int, ...]) -> QTensor:
+    def from_choi(cls, matrix: np.ndarray, dims: tuple[int, ...]) -> Self:
         """Inverse of :attr:`choi`: build the leg tensor from a Choi matrix."""
         dims = tuple(int(d) for d in dims)
         return cls(representations.choi_to_tensor(matrix, dims), dims)

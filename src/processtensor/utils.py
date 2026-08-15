@@ -70,7 +70,9 @@ def superop_from_unitary(U: np.ndarray) -> np.ndarray:
 
 def superop_from_kraus(kraus: list[np.ndarray]) -> np.ndarray:
     """Liouville superoperator of ``rho -> sum_i K_i rho K_i^dag``."""
-    return sum(np.kron(K.conj(), K) for K in kraus)
+    if not kraus:
+        raise ValueError("At least one Kraus operator is required.")
+    return np.sum([np.kron(K.conj(), K) for K in kraus], axis=0)
 
 
 def rft_unitary(U: np.ndarray, dS: int, dE: int) -> np.ndarray:

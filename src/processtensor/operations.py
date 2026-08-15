@@ -31,7 +31,7 @@ def link_product(x: QTensor, y: QTensor, legs_x: list[int], legs_y: list[int]) -
     """
     if len(legs_x) != len(legs_y):
         raise ValueError("legs_x and legs_y must pair up one-to-one.")
-    for lx, ly in zip(legs_x, legs_y):
+    for lx, ly in zip(legs_x, legs_y, strict=True):
         if x.dims[lx] != y.dims[ly]:
             raise ValueError(
                 f"Cannot link leg {lx} (dim {x.dims[lx]}) of {x!r} with "

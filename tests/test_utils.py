@@ -10,7 +10,7 @@ from processtensor import (
     vec,
     von_neumann_entropy,
 )
-from processtensor.utils import pauli, superop_from_unitary
+from processtensor.utils import pauli, superop_from_kraus, superop_from_unitary
 
 RNG = np.random.default_rng(42)
 
@@ -52,6 +52,12 @@ def test_unitary_from_hamiltonian():
 def test_pauli_string_is_kron_of_singles():
     assert np.allclose(pauli("XZ"), np.kron(pauli("X"), pauli("Z")))
     assert np.allclose(pauli("x"), pauli("X"))
+
+
+def test_superop_from_empty_kraus_raises():
+    """An empty Kraus list is not the zero map; summing it would return 0."""
+    with pytest.raises(ValueError):
+        superop_from_kraus([])
 
 
 def test_pauli_invalid_label_raises():
