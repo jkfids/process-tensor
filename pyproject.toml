@@ -45,9 +45,8 @@ classifiers = [
   "Typing :: Typed",
 ]
 
-# The only runtime dependency. No upper bound, per library convention; the
-# floor is the oldest numpy with wheels for the whole matrix.
-dependencies = ["numpy>=2.4"]
+# Numerical arrays and optimization, without upper bounds.
+dependencies = ["numpy>=2.4", "scipy>=1.16"]
 
 [project.optional-dependencies]
 # Install with:

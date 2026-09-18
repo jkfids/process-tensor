@@ -10,8 +10,8 @@ formalism: multi-time quantum processes together with the states and
 channels they act on. The package is intended as a small, readable, and
 reusable core—partly pedagogical in aim—rather than a comprehensive
 framework; a comprehensive package is planned as a separate project. Its
-only runtime dependency is numpy. When a design choice trades generality or
-performance against readability, readability wins.
+runtime dependencies are NumPy and SciPy. When a design choice trades
+generality or performance against readability, readability wins.
 
 ## Philosophy
 
@@ -59,6 +59,9 @@ New code goes where its category dictates: a new quantity belongs in
 `measures.py`, a new conversion in `representations.py`, a new composition
 in `operations.py`. Classes never carry quantity or conversion logic;
 they hold structure and delegation.
+
+A shared Pauli decomposition could belong in `representations.py` if other
+measures or operations need it; currently only stabilizer Rényi-2 uses it.
 
 ## Mathematical conventions
 

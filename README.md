@@ -73,6 +73,9 @@ one for a process tensor.
   (`temporal_negativity()`) witnessing genuinely quantum memory.
 - `schmidt_rank`, `bond_entropy` – operator Schmidt data across a cut; for a
   process the rank is the minimal MPO bond dimension there.
+- `stabilizer_renyi2` – roof-extended stabilizer Rényi-2 entropy of the
+  normalized Choi state: direct evaluation for pure states and a numerical
+  upper bound from ensemble optimization for mixed states.
 
 ## Installation
 
@@ -82,7 +85,7 @@ cd process-tensor
 pip install -e .  # or `pip install -e '.[dev,examples]'`
 ```
 
-The only runtime dependency is numpy.
+The runtime dependencies are NumPy and SciPy.
 
 ## Quickstart
 
