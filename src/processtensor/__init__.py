@@ -15,6 +15,7 @@ from .measures import (
     purity,
     schmidt_rank,
     schmidt_values,
+    stabilizer_renyi2,
 )
 from .operations import link_product
 from .processtensor import ProcessTensor
@@ -46,6 +47,7 @@ __all__ = [  # noqa: RUF022 - grouped by DESIGN.md category, not isort order
     "negativity",
     "mutual_information",
     "purity",
+    "stabilizer_renyi2",
     "schmidt_values",
     "schmidt_rank",
     "bond_entropy",
