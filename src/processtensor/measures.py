@@ -84,6 +84,8 @@ def stabilizer_renyi2(
     in ``{I, X, Y, Z}^n``. For mixed states, the roof extension is
     ``-ln(max sum_a p_a Q(psi_a))``, over all pure-state decompositions of
     ``rho = x.choi / x.trace``. All legs must be qubits.
+    The logarithm follows the ensemble average; minimizing the average
+    pure-state entropy defines a different quantity.
 
     Mixed inputs emit a ``RuntimeWarning`` and use local optimization over
     rank-squared ensemble members. The result is a numerical upper bound,
@@ -94,7 +96,7 @@ def stabilizer_renyi2(
     searches. Raises ``RuntimeError`` if every optimization fails.
 
     The roof extension follows Leone and Bittel, Phys. Rev. A 110,
-    L040403 (2024), Definition 5 (arXiv:2404.11652).
+    L040403 (2024), Definition 5, Eq. (6) (arXiv:2404.11652).
     """
     if not x.dims or any(d != 2 for d in x.dims):
         raise ValueError("All legs must be qubits.")
